@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>file-download</title>
+    <script src="./jquery-3.6.1.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <p>普通的上传</p>
+      <div class="container">
+        <p>文件和其他字段合并一个formdata上传</p>
+        <input type="file" id="input1" />
+        <button id="btn1">上传</button>
+      </div>
+      <div class="container">
+        <p>将文件转为FormData后再上传</p>
+        <input type="file" id="input2" />
+        <button id="btn2">上传</button>
+      </div>
+      <div class="container">
+        <p>多文件简单上传</p>
+        <input type="file" id="input3" multiple />
+        <button id="btn3">上传</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <p>分片下载文件到内存，下载完后合并成单一文件，再浏览器保存</p>
+      <div class="container">
+        <p>下载图片</p>
+        <button id="download1">下载</button>
+      </div>
+      <div class="container">
+        <p>下载视频</p>
+        <button id="download2">下载</button>
+      </div>
+      <div class="container">
+        <p>浏览器下载,在响应头里添加content-disposition=attachment,就可以下载文件了</p>
+      </div>
+    </div>
+
+    <script src="./upload.js"></script>
+    <script src="./download.js"></script>
+  </body>
+</html>
