@@ -10,10 +10,8 @@ yarn dev
 > 2. 可以在vscode里直接f5启动server断点调试
 
 
-> 最好的下载方式就是通过 api 换取有临时权限的 url，然后让浏览器去下载
 
-
-## 上传策略
+## 上传
 
 1. 单个小文件，2m以内的，就直接上传，不需要搞花花
 2. 多个小文件一起，那看情况。
@@ -23,6 +21,33 @@ yarn dev
 3. 单个大文件，现在的网速，10m左右的，也可以选择直接上传，影响不大。
 4. 单个的大文件，100m 以上了，就要分片传了。
 5. 多个大文件，就每个大文件自己上传。并不看作是一起上传。
+
+## 下载
+
+1. 小文件下载，2m以内的
+   1. 可以直接浏览器下载。注意响应的 content-disposition 头
+   2. 或者通过 xhr 获取文件的 blob 对象后，通过 a 标签下载
+2. 大文件下载
+   1. 同样可以浏览器下载。这都是最推荐的方式
+   2. 通过设置 range 头，利用 http 的 206 状态码，获取文件的片。都下载成功后，利用 ArrayBuffer 和 Uint8Array 进行合并
+  
+```
+xhr.setRequestHeader("range", `bytes=${chunk.start}-${chunk.end}`);
+```
+
+### 一点说明：
+   
+文件的下载没什么特别的花花。
+
+对于分片下载，文件的数据都是暂时存在内存里，这样会短时间增加网站整体的内存占用。有崩溃的可能。而且到此时，分片并不能保证续传。
+
+当然也可以续传。已经传完的片可以记录到本地的 indexed db中，然后最后合并保存。但同样避免不了一时的内存占用，并且使用了 db，还会遇到很多 db的问题。比如开两个窗口，都去下载，怎么避免这种问题。所以还是不建议这么做。
+
+这些都没有使用浏览器下载来的方便和有效。浏览器下载可以本身就续传，特别有益于网络问题。
+
+但浏览器下载就会遇到盗链的问题。一旦链接被获取，那就可以被任意下载。
+
+> 所以对于下载，不管大文件还是小文件，也不管多少个文件，最好的下载方式就是通过 api 换取有临时访问权限的 url，然后让浏览器去下载
 
 
 ### 分片上传分几步：
@@ -45,8 +70,16 @@ yarn dev
    5. 如果send 是失败的，要把对应的片信息记录下来，可以放入一个失败队列里，在complete方法里也验证下失败队列有没有需要上传的。
 
 
+## 链接
+
 [blob](https://zh.javascript.info/blob)
 
 [koa](https://chenshenhai.github.io/koa2-note/note/upload/simple.html)
 
 [node里用fs流传文件](https://www.cnblogs.com/tugenhua0707/p/10828869.html)
+
+[indexed db](https://zh.javascript.info/indexeddb)
+
+[indexed db api 2.0](https://www.w3.org/TR/IndexedDB-2/)
+
+[indexed db api 3.0](https://www.w3.org/TR/IndexedDB/)
