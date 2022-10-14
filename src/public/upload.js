@@ -69,6 +69,11 @@ $("#btn2").click(function() {
   data.append("file", file)
 
   xhr.send(data)
+
+  // setTimeout(() => {
+  //   xhr.abort()
+  // }, 2000);
+  
 })
 
 
